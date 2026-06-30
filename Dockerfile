@@ -18,6 +18,9 @@ RUN pecl install mongodb redis \
 # Enable Apache rewrite module for clean routing if needed
 RUN a2enmod rewrite
 
+# Explicitly disable mpm_event/mpm_worker and enable mpm_prefork to prevent multi-MPM conflicts on Railway
+RUN a2dismod mpm_event mpm_worker || true && a2enmod mpm_prefork
+
 # Copy all project files into Apache's web root
 COPY . /var/www/html/
 
