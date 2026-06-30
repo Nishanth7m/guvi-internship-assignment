@@ -119,10 +119,15 @@ class Database {
         if (self::$redisInstance === null) {
             $redisUrl = getenv('REDIS_URL');
             if (!empty($redisUrl)) {
-                $parts = parse_url($redisUrl);
-                $host = isset($parts['host']) ? $parts['host'] : '127.0.0.1';
-                $port = isset($parts['port']) ? (int)$parts['port'] : 6379;
-                $auth = isset($parts['pass']) ? $parts['pass'] : '';
+                if (preg_match('/^redis:\/\/(?:([^:]*):([^@]*)@)?([^:\/]+)(?::([0-9]+))?/', $redisUrl, $matches)) {
+                    $host = !empty($matches[3]) ? $matches[3] : '127.0.0.1';
+                    $port = !empty($matches[4]) ? (int)$matches[4] : 6379;
+                    $auth = !empty($matches[2]) ? $matches[2] : '';
+                } else {
+                    $host = '127.0.0.1';
+                    $port = 6379;
+                    $auth = '';
+                }
             } else {
                 $host = getenv('REDIS_HOST') ?: '127.0.0.1';
                 $port = (int)(getenv('REDIS_PORT') ?: 6379);

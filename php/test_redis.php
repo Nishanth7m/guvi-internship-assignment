@@ -23,11 +23,16 @@ echo "REDIS_AUTH: " . ($auth ? "**** (set)" : "NOT SET") . "\n\n";
 
 // Parse URL if present
 if (!empty($redisUrl)) {
-    echo "Parsing REDIS_URL...\n";
-    $parts = parse_url($redisUrl);
-    $parsedHost = isset($parts['host']) ? $parts['host'] : '127.0.0.1';
-    $parsedPort = isset($parts['port']) ? (int)$parts['port'] : 6379;
-    $parsedAuth = isset($parts['pass']) ? $parts['pass'] : '';
+    echo "Parsing REDIS_URL using regex...\n";
+    if (preg_match('/^redis:\/\/(?:([^:]*):([^@]*)@)?([^:\/]+)(?::([0-9]+))?/', $redisUrl, $matches)) {
+        $parsedHost = !empty($matches[3]) ? $matches[3] : '127.0.0.1';
+        $parsedPort = !empty($matches[4]) ? (int)$matches[4] : 6379;
+        $parsedAuth = !empty($matches[2]) ? $matches[2] : '';
+    } else {
+        $parsedHost = '127.0.0.1';
+        $parsedPort = 6379;
+        $parsedAuth = '';
+    }
     
     echo "Parsed Host: $parsedHost\n";
     echo "Parsed Port: $parsedPort\n";
