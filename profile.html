@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Dashboard | Developer Portal</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Font Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- Custom CSS Styles -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Loading Overlay -->
+    <div id="pageLoader" class="loading-overlay active">
+        <div class="text-center">
+            <div class="spinner-neon mb-3"></div>
+            <p class="text-secondary small">Synchronizing secure session...</p>
+        </div>
+    </div>
+
+    <!-- Toast Container for Notifications -->
+    <div class="toast-container">
+        <div id="statusToast" class="toast align-items-center border-0 glass-toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body" id="toastMessage">
+                    <!-- Dynamic message goes here -->
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header Navigation -->
+    <header class="navbar navbar-expand-lg navbar-dark bg-transparent border-bottom border-secondary border-opacity-25 py-3">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="index.html">
+                <i class="fa-solid fa-cube text-primary me-2"></i>
+                <span class="gradient-text fw-bold">GuildDev</span>
+            </a>
+            <button id="logoutBtn" class="btn btn-outline-danger btn-sm px-3 rounded-pill">
+                <i class="fa-solid fa-right-from-bracket me-1"></i> Logout
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Profile Content -->
+    <main class="container my-5 flex-grow-1">
+        <div class="row g-4">
+            
+            <!-- Left Panel: Profile Quick Info -->
+            <div class="col-12 col-lg-4">
+                <div class="glass-card p-4 text-center">
+                    
+                    <!-- Avatar Area -->
+                    <div class="position-relative d-inline-block mx-auto mb-3">
+                        <div class="bg-secondary rounded-circle d-flex align-items-center justify-content-center text-white" style="width: 110px; height: 110px; font-size: 2.5rem; background: linear-gradient(135deg, #6366f1 0%, #4338ca 100%) !important;">
+                            <span id="avatarInitials">--</span>
+                        </div>
+                        <div class="position-absolute bottom-0 end-0 bg-success border border-dark border-3 rounded-circle" style="width: 20px; height: 20px;" title="Online"></div>
+                    </div>
+
+                    <h2 class="h4 mb-1" id="profileCardName">Loading User...</h2>
+                    <p class="text-secondary small mb-3" id="profileCardEmail">...</p>
+                    
+                    <hr class="border-secondary border-opacity-25 my-4">
+                    
+                    <!-- Quick Stats or Metas -->
+                    <div class="text-start">
+                        <h3 class="h6 text-uppercase text-secondary tracking-wider small mb-3">Developer Profile</h3>
+                        <div class="mb-2">
+                            <span class="text-secondary small">Age Group:</span>
+                            <span class="small fw-semibold float-end" id="profileStatAge">--</span>
+                        </div>
+                        <div class="mb-2">
+                            <span class="text-secondary small">Joined Date:</span>
+                            <span class="small fw-semibold float-end" id="profileStatJoined">--</span>
+                        </div>
+                        <div class="mb-0">
+                            <span class="text-secondary small">Last Synchronized:</span>
+                            <span class="small fw-semibold float-end text-success" id="profileStatSync">Just Now</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Right Panel: Profile Editor Form -->
+            <div class="col-12 col-lg-8">
+                <div class="glass-card p-4 p-md-5">
+                    
+                    <div class="d-flex align-items-center justify-content-between mb-4">
+                        <h2 class="h3 gradient-text m-0">Edit Profile</h2>
+                        <span class="badge bg-secondary bg-opacity-25 text-secondary border border-secondary border-opacity-50">Authorized</span>
+                    </div>
+
+                    <!-- Profile Form -->
+                    <form id="profileForm" novalidate>
+                        
+                        <!-- Core Account (MySQL) -->
+                        <h3 class="h6 text-indigo text-uppercase mb-3 fw-bold"><i class="fa-solid fa-key me-2"></i>Account Details</h3>
+                        <div class="row g-3 mb-4">
+                            <!-- Full Name -->
+                            <div class="col-12 col-md-6">
+                                <label for="fullName" class="glass-label">Full Name</label>
+                                <input type="text" class="form-control glass-input" id="fullName" placeholder="Full Name" required autocomplete="name">
+                                <div class="invalid-feedback">Full name is required.</div>
+                            </div>
+                            <!-- Email (Read-Only) -->
+                            <div class="col-12 col-md-6">
+                                <label for="emailAddress" class="glass-label">Email Address (Locked)</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-dark border-secondary text-secondary"><i class="fa-solid fa-lock"></i></span>
+                                    <input type="email" class="form-control glass-input" id="emailAddress" placeholder="Email" readonly>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="border-secondary border-opacity-25 my-4">
+
+                        <!-- Personal Details (MongoDB) -->
+                        <h3 class="h6 text-indigo text-uppercase mb-3 fw-bold"><i class="fa-solid fa-user me-2"></i>Profile Specifics</h3>
+                        <div class="row g-3 mb-4">
+                            <!-- Age -->
+                            <div class="col-12 col-md-6">
+                                <label for="age" class="glass-label">Age</label>
+                                <input type="number" class="form-control glass-input" id="age" min="1" max="120" placeholder="e.g. 24" required>
+                                <div class="invalid-feedback">Please enter a valid age between 1 and 120.</div>
+                            </div>
+                            <!-- Date of Birth -->
+                            <div class="col-12 col-md-6">
+                                <label for="dob" class="glass-label">Date of Birth</label>
+                                <input type="date" class="form-control glass-input" id="dob" required>
+                                <div class="invalid-feedback">Please select a valid date of birth.</div>
+                            </div>
+                            <!-- Phone -->
+                            <div class="col-12 col-md-6">
+                                <label for="phone" class="glass-label">Phone Number</label>
+                                <input type="tel" class="form-control glass-input" id="phone" placeholder="e.g. +91 9876543210" required>
+                                <div class="invalid-feedback">Please enter a valid phone number (10-15 digits).</div>
+                            </div>
+                            <!-- Address -->
+                            <div class="col-12 col-md-6">
+                                <label for="address" class="glass-label">Current Address</label>
+                                <input type="text" class="form-control glass-input" id="address" placeholder="City, Country" required>
+                                <div class="invalid-feedback">Address is required.</div>
+                            </div>
+                        </div>
+
+                        <!-- Bio -->
+                        <div class="mb-4">
+                            <label for="bio" class="glass-label">Short Biography</label>
+                            <textarea class="form-control glass-input" id="bio" rows="3" placeholder="Tell us about yourself..." required></textarea>
+                            <div class="invalid-feedback">Biography details are required.</div>
+                        </div>
+
+                        <!-- Interactive Skills Editor -->
+                        <div class="mb-4">
+                            <label for="skillInput" class="glass-label">Skills & Frameworks</label>
+                            <div class="input-group mb-2">
+                                <input type="text" class="form-control glass-input" id="skillInput" placeholder="Type a skill (e.g. React, PHP) and hit Enter or click Add">
+                                <button class="btn btn-outline-primary" type="button" id="addSkillBtn"><i class="fa-solid fa-plus"></i> Add</button>
+                            </div>
+                            <!-- Tags Container -->
+                            <div id="skillsContainer" class="p-2 border border-secondary border-opacity-25 rounded bg-dark bg-opacity-25 min-vh-10">
+                                <div class="text-secondary small p-2" id="noSkillsText">No skills added yet.</div>
+                            </div>
+                        </div>
+
+                        <!-- Save changes button -->
+                        <button type="button" id="saveProfileBtn" class="btn btn-glass-primary w-100 mt-2">
+                            <span class="spinner-border spinner-border-sm me-2 d-none" id="saveSpinner" role="status" aria-hidden="true"></span>
+                            Save Profile Changes
+                        </button>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer mt-auto py-3 bg-transparent border-top border-secondary border-opacity-10 text-center">
+        <div class="container text-secondary small">
+            &copy; 2026 Developer Guild. Built securely with PHP, MySQL, Mongo & Redis.
+        </div>
+    </footer>
+
+    <!-- jQuery CDN -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom jQuery AJAX Profile Script -->
+    <script src="js/profile.js"></script>
+</body>
+</html>
