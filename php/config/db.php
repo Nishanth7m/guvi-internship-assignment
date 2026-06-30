@@ -117,9 +117,17 @@ class Database {
      */
     public static function getRedis() {
         if (self::$redisInstance === null) {
-            $host = getenv('REDIS_HOST') ?: '127.0.0.1';
-            $port = (int)(getenv('REDIS_PORT') ?: 6379);
-            $auth = getenv('REDIS_AUTH');
+            $redisUrl = getenv('REDIS_URL');
+            if (!empty($redisUrl)) {
+                $parts = parse_url($redisUrl);
+                $host = isset($parts['host']) ? $parts['host'] : '127.0.0.1';
+                $port = isset($parts['port']) ? (int)$parts['port'] : 6379;
+                $auth = isset($parts['pass']) ? $parts['pass'] : '';
+            } else {
+                $host = getenv('REDIS_HOST') ?: '127.0.0.1';
+                $port = (int)(getenv('REDIS_PORT') ?: 6379);
+                $auth = getenv('REDIS_AUTH');
+            }
 
             try {
                 $redis = new Redis();
