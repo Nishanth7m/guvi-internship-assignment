@@ -49,11 +49,21 @@ class Database {
      */
     public static function getMySQL() {
         if (self::$mysqlInstance === null) {
-            $host = getenv('DB_HOST') ?: '127.0.0.1';
-            $dbName = getenv('DB_NAME') ?: 'guvi_internship';
-            $user = getenv('DB_USER') ?: 'root';
-            $password = getenv('DB_PASS') !== false ? getenv('DB_PASS') : '';
-            $port = getenv('DB_PORT') ?: '3306';
+            $mysqlUrl = getenv('MYSQL_URL') ?: getenv('DB_URL');
+            if (!empty($mysqlUrl)) {
+                $dbparts = parse_url($mysqlUrl);
+                $host = isset($dbparts['host']) ? $dbparts['host'] : '127.0.0.1';
+                $port = isset($dbparts['port']) ? $dbparts['port'] : '3306';
+                $user = isset($dbparts['user']) ? $dbparts['user'] : 'root';
+                $password = isset($dbparts['pass']) ? $dbparts['pass'] : '';
+                $dbName = isset($dbparts['path']) ? ltrim($dbparts['path'], '/') : 'guvi_internship';
+            } else {
+                $host = getenv('DB_HOST') ?: '127.0.0.1';
+                $dbName = getenv('DB_NAME') ?: 'guvi_internship';
+                $user = getenv('DB_USER') ?: 'root';
+                $password = getenv('DB_PASS') !== false ? getenv('DB_PASS') : '';
+                $port = getenv('DB_PORT') ?: '3306';
+            }
 
             $dsn = "mysql:host={$host};port={$port};dbname={$dbName};charset=utf8mb4";
             
