@@ -78,17 +78,20 @@ class Database {
      */
     public static function getMongo() {
         if (self::$mongoInstance === null) {
-            $host = getenv('MONGO_HOST') ?: '127.0.0.1';
-            $port = getenv('MONGO_PORT') ?: '27017';
-            $user = getenv('MONGO_USER');
-            $pass = getenv('MONGO_PASS');
-            
-            $authString = "";
-            if (!empty($user) && !empty($pass)) {
-                $authString = "{$user}:" . urlencode($pass) . "@";
-            }
+            $uri = getenv('MONGO_URI');
+            if (empty($uri)) {
+                $host = getenv('MONGO_HOST') ?: '127.0.0.1';
+                $port = getenv('MONGO_PORT') ?: '27017';
+                $user = getenv('MONGO_USER');
+                $pass = getenv('MONGO_PASS');
+                
+                $authString = "";
+                if (!empty($user) && !empty($pass)) {
+                    $authString = "{$user}:" . urlencode($pass) . "@";
+                }
 
-            $uri = "mongodb://{$authString}{$host}:{$port}";
+                $uri = "mongodb://{$authString}{$host}:{$port}";
+            }
             
             try {
                 self::$mongoInstance = new MongoDB\Driver\Manager($uri);
