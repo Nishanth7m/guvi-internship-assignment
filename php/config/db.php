@@ -129,9 +129,9 @@ class Database {
                     $auth = '';
                 }
             } else {
-                $host = getenv('REDIS_HOST') ?: '127.0.0.1';
-                $port = (int)(getenv('REDIS_PORT') ?: 6379);
-                $auth = getenv('REDIS_AUTH');
+                $host = getenv('REDIS_HOST') ?: (getenv('REDISHOST') ?: '127.0.0.1');
+                $port = (int)(getenv('REDIS_PORT') ?: (getenv('REDISPORT') ?: 6379));
+                $auth = getenv('REDIS_AUTH') ?: (getenv('REDISPASSWORD') ?: '');
             }
 
             try {

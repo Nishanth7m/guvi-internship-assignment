@@ -11,9 +11,9 @@ header('Content-Type: text/plain; charset=utf-8');
 echo "=== REDIS DIAGNOSTIC TEST ===\n\n";
 
 $redisUrl = getenv('REDIS_URL');
-$host = getenv('REDIS_HOST');
-$port = getenv('REDIS_PORT');
-$auth = getenv('REDIS_AUTH');
+$host = getenv('REDIS_HOST') ?: getenv('REDISHOST');
+$port = getenv('REDIS_PORT') ?: getenv('REDISPORT');
+$auth = getenv('REDIS_AUTH') ?: getenv('REDISPASSWORD');
 
 echo "Raw Environment Variables:\n";
 echo "REDIS_URL: " . ($redisUrl ? substr($redisUrl, 0, 15) . "..." : "NOT SET") . "\n";
@@ -45,7 +45,7 @@ if (!empty($redisUrl)) {
     echo "Using individual variables...\n";
     $targetHost = $host ?: '127.0.0.1';
     $targetPort = (int)($port ?: 6379);
-    $targetAuth = $auth;
+    $targetAuth = $auth ?: '';
 }
 
 echo "Attempting connection to $targetHost:$targetPort...\n";
